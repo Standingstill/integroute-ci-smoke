@@ -1,0 +1,26 @@
+version: 2.1
+
+parameters:
+  run_integroute:
+    type: boolean
+    default: false
+
+jobs:
+  node_tests:
+    docker:
+      - image: cimg/node:22.13
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - run:
+          name: Run tests
+          command: npm test
+
+workflows:
+  integroute_ci:
+    when: << pipeline.parameters.run_integroute >>
+    jobs:
+      - node_tests
